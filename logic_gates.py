@@ -5,25 +5,27 @@
 
 class LogicGate:
     def __init__(self, n):
+        # Label is the name of the gate
         self.label = n
     
     def getLabel(self):
         return self.label
 
     def getOutput(self):
+        #This would perform the the necessary calculation and return an output, which can be printed
         output = self.performGateLogic()
         return output
 
     def getPin(self):
         pin = int(input())
-        # input checking, if not 1 or 0, reenter
+        # input checking, if not 1 or 0, ask user to reenter
         while (pin!=1) and (pin!=0):
             print("Please enter 1 or 0 only: ")
             pin = int(input())
         
         return pin
     
-
+#Binary Gate needs two pins (Two inputs- pin A and pin B)
 class BinaryGate(LogicGate):
     def __init__(self, n):
         LogicGate.__init__(self,n)
@@ -44,7 +46,7 @@ class BinaryGate(LogicGate):
             self.pinBTaken = True
         return self.pinB
 
-    # This allow us to set the pin from the previous output
+    # set the next empty pin to the source (1 or 0 presumbly)
     def setNextPin(self, source):
         if (self.pinATaken == False):
             self.pinA = source
@@ -53,7 +55,7 @@ class BinaryGate(LogicGate):
             self.pinB = source
             self.pinBTaken = True
             
-     
+#Unary Gate only needs one input / one pin
 class UnaryGate(LogicGate):
     def __init__(self,n):
         LogicGate.__init__(self,n)
@@ -66,6 +68,7 @@ class UnaryGate(LogicGate):
             self.pinTaken = True
         return self.pin
 
+    #sets the next empty pin
     def setNextPin(self, source):
         if (self.pinTaken == False):
             self.pin = source
@@ -141,7 +144,7 @@ class Connector:
         self.fromgate = fgate
         self.togate = tgate
         self.getInput()
-
+    #This allow us to set the output from a from gate as an input to the to gate
     def getInput(self):
         self.togate.setNextPin(self.fromgate.getOutput())
 
@@ -157,19 +160,19 @@ class Connector:
 # print(gand.getOutput())
 
 # Testing the conncector
-gand1 = AndGate (" AND1 ")
-gand2 = AndGate (" AND2 ")
-gor3= OrGate(" OR ")
-gnot4= NotGate(" NOT ")
+gand1 = AndGate (" AND1 ") #creating an AND Gate with the name " AND1 "
+gand2 = AndGate (" AND2 ") #creating an AND Gate with the name " AND2 "
+gor3= OrGate(" OR ") #creating a OR Gate with the name " OR "
+gnot4= NotGate(" NOT ") #Creating a NOT Gate with the name " NOT "
 
-gand1.setNextPin(1)
-gand1.setNextPin(1)
-gand2.setNextPin(0)
-gand2.setNextPin(0)
+gand1.setNextPin(1) # this sets the first pin of the AND gate to 1
+gand1.setNextPin(1) # sets the second pin of the AND gate to 1
+gand2.setNextPin(0) # sets the first pin of the AND gate to 0
+gand2.setNextPin(0) # sets the second pin of the AND gate to 0
 
-c1 = Connector(gand1, gor3)
-c2 = Connector(gand2, gor3)
-c3 = Connector(gor3, gnot4)
+c1 = Connector(gand1, gor3) # Connects gand1 and gor3 so the output of gand1 would be the first input of gor3
+c2 = Connector(gand2, gor3) # Connects gand2 and gor3 so the output of gand2 would be the second input of gor3
+c3 = Connector(gor3, gnot4) # Connects gor3 to gnot4, so output of gor3 is input to gnot4
 
 print (gnot4.getLabel(),"( (",gand1.getPinA(),gand1.getLabel(),gand1.getPinB(),")",gor3.getLabel(),"(",gand2.getPinA(),gand2.getLabel(),gand2.getPinB(),") )","results in ",gnot4.getOutput())
 
